@@ -78,7 +78,7 @@ public class CompetitionDijkstra {
             myReader.nextLine(); myReader.nextLine(); // skip first two lines
             while(myReader.hasNextLine()) {
                 String nextLine = myReader.nextLine();
-                String[] row = nextLine.split(" ");
+                String[] row = nextLine.trim().split("\\s+");
 
                 System.out.println(Arrays.toString(row));
                 int intersectionA = Integer.parseInt(row[0]);
