@@ -15,15 +15,84 @@
  * This class implements the competition using Dijkstra's algorithm
  */
 
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Scanner;
+
 public class CompetitionDijkstra {
 
+    ArrayList<Street> streets = new ArrayList<>();
+    int speedA, speedB, speedC;
+
+
     /**
-     * @param filename: A filename containing the details of the city road network
+     * @param fileName: A filename containing the details of the city road network
      * @param sA, sB, sC: speeds for 3 contestants
     */
-    CompetitionDijkstra (String filename, int sA, int sB, int sC){
 
-       //TODO
+    /**
+     * Get the number of intersections in a given data set
+     * @param fileName
+     * @return int the number of intersections
+     */
+    private int getNumberIntersections(String fileName) {
+        File myObj = new File(fileName);
+        int intersections = 0;
+        try {
+            Scanner myReader = new Scanner(myObj);
+            if (myReader.hasNext()) {
+                intersections = myReader.nextInt();;
+            }
+            myReader.close();
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
+        return intersections;
+    }
+
+    CompetitionDijkstra (String fileName, int sA, int sB, int sC){
+        // Parse lines 3 onwards into class Street
+        parseStreets(fileName);
+        // Configure contestant speeds
+        this.speedA = sA;
+        this.speedB = sB;
+        this.speedC = sC;
+
+        System.out.println(getNumberIntersections(fileName));
+//        Algorithms a = new Algorithms();
+//        a.Dijkstra(new int[]{1, 3, 5, 2 }, sA);
+    }
+//                if(nextLine.charAt(0) == ' ') nextLine.substring(1);
+
+    /**
+     *  Parse the streets from a given fileName
+     *  Enter each street into the Street class and store in a global ArrayList
+     * @param fileName
+     */
+    void parseStreets(String fileName) {
+        File myObj = new File(fileName);
+        try {
+            Scanner myReader = new Scanner(myObj);
+            myReader.nextLine(); myReader.nextLine(); // skip first two lines
+            while(myReader.hasNextLine()) {
+                String nextLine = myReader.nextLine();
+                String[] row = nextLine.split(" ");
+
+                System.out.println(Arrays.toString(row));
+                int intersectionA = Integer.parseInt(row[0]);
+                int intersectionB = Integer.parseInt(row[1]);
+                double streetLength = Double.parseDouble(row[2]);
+
+                streets.add(new Street(intersectionA, intersectionB, streetLength));
+            }
+            myReader.close();
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch(Exception error) {
+            System.out.println("Invalid data set provided. " + error.getMessage());
+        }
     }
 
 
@@ -36,4 +105,20 @@ public class CompetitionDijkstra {
         return -1;
     }
 
+}
+
+class Street {
+    int intersectionA;
+    int intersectionB;
+    double streetLength;
+
+    Street(int intersectionA, int intersectionB, double streetLength) {
+        this.intersectionA = intersectionA;
+        this.intersectionB = intersectionB;
+        this.streetLength = streetLength;
+    }
+
+    double getStreetLength() {
+        return this.streetLength;
+    }
 }
