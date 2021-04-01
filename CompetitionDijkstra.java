@@ -23,34 +23,14 @@ import java.util.Scanner;
 
 public class CompetitionDijkstra {
 
-    ArrayList<Street> streets = new ArrayList<>();
+//    ArrayList<Street> streets = new ArrayList<>();
     int speedA, speedB, speedC;
-
+//    int intersectionsQuantity, streetQuantity;
 
     /**
      * @param fileName: A filename containing the details of the city road network
      * @param sA, sB, sC: speeds for 3 contestants
     */
-
-    /**
-     * Get the number of intersections in a given data set
-     * @param fileName
-     * @return int the number of intersections
-     */
-    private int getNumberIntersections(String fileName) {
-        File myObj = new File(fileName);
-        int intersections = 0;
-        try {
-            Scanner myReader = new Scanner(myObj);
-            if (myReader.hasNext()) {
-                intersections = myReader.nextInt();;
-            }
-            myReader.close();
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-        }
-        return intersections;
-    }
 
     CompetitionDijkstra (String fileName, int sA, int sB, int sC){
         // Parse lines 3 onwards into class Street
@@ -60,7 +40,7 @@ public class CompetitionDijkstra {
         this.speedB = sB;
         this.speedC = sC;
 
-        System.out.println(getNumberIntersections(fileName));
+//        System.out.println(getNumberIntersections(fileName));
 //        Algorithms a = new Algorithms();
 //        a.Dijkstra(new int[]{1, 3, 5, 2 }, sA);
     }
@@ -75,7 +55,11 @@ public class CompetitionDijkstra {
         File myObj = new File(fileName);
         try {
             Scanner myReader = new Scanner(myObj);
-            myReader.nextLine(); myReader.nextLine(); // skip first two lines
+
+            int intersectionsQuantity = Integer.parseInt(myReader.nextLine());
+            int streetQuantity = Integer.parseInt(myReader.nextLine()); // skip first two lines
+//            myReader.nextLine();
+            Streets streets = new Streets(intersectionsQuantity, streetQuantity);
             while(myReader.hasNextLine()) {
                 String nextLine = myReader.nextLine();
                 String[] row = nextLine.trim().split("\\s+");
@@ -85,7 +69,8 @@ public class CompetitionDijkstra {
                 int intersectionB = Integer.parseInt(row[1]);
                 double streetLength = Double.parseDouble(row[2]);
 
-                streets.add(new Street(intersectionA, intersectionB, streetLength));
+//                streets.add(new Street(intersectionA, intersectionB, streetLength));
+                streets.insertStreet(intersectionA, intersectionB, streetLength);
             }
             myReader.close();
         } catch (FileNotFoundException e) {
@@ -107,6 +92,35 @@ public class CompetitionDijkstra {
 
 }
 
+class Streets {
+    ArrayList<Street> streets = new ArrayList<>();
+    int intersectionsQuantity, streetsQuantity;
+    Streets(int intersectionsQuantity, int streetsQuantity) {
+        this.intersectionsQuantity = intersectionsQuantity;
+        this.streetsQuantity = streetsQuantity;
+    }
+
+    void insertStreet(int intersectionA, int intersectionB, double streetLength) {
+        try {
+            isVertexValid(intersectionA);
+            isVertexValid(intersectionB);
+
+            Street s = new Street(intersectionA, intersectionB, streetLength);
+            streets.add(s);
+        } catch(Exception e) {
+            System.out.println("Error inserting edge");
+        }
+    }
+
+    private void isVertexValid(int vertex) {
+        if (vertex < 0 || vertex >= intersectionsQuantity) {
+            throw new IllegalArgumentException("Vertex " + vertex + "  has an invalid range," +
+                    "must be between 0 and " + (intersectionsQuantity - 1));
+        }
+    }
+
+}
+
 class Street {
     int intersectionA;
     int intersectionB;
@@ -117,7 +131,6 @@ class Street {
         this.intersectionB = intersectionB;
         this.streetLength = streetLength;
     }
-
     double getStreetLength() {
         return this.streetLength;
     }
