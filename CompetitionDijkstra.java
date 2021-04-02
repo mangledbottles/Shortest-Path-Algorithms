@@ -17,15 +17,15 @@
 
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Comparator;
 import java.util.Scanner;
 
 public class CompetitionDijkstra {
 
-//    ArrayList<Street> streets = new ArrayList<>();
     int speedA, speedB, speedC;
-//    int intersectionsQuantity, streetQuantity;
 
     /**
      * @param fileName: A filename containing the details of the city road network
@@ -40,26 +40,21 @@ public class CompetitionDijkstra {
         this.speedB = sB;
         this.speedC = sC;
 
-//        System.out.println(getNumberIntersections(fileName));
-//        Algorithms a = new Algorithms();
-//        a.Dijkstra(new int[]{1, 3, 5, 2 }, sA);
     }
-//                if(nextLine.charAt(0) == ' ') nextLine.substring(1);
 
     /**
      *  Parse the streets from a given fileName
      *  Enter each street into the Street class and store in a global ArrayList
-     * @param fileName
+     * @param fileName location of file to parse
      */
     void parseStreets(String fileName) {
         File myObj = new File(fileName);
         try {
             Scanner myReader = new Scanner(myObj);
-
             int intersectionsQuantity = Integer.parseInt(myReader.nextLine());
             int streetQuantity = Integer.parseInt(myReader.nextLine()); // skip first two lines
-//            myReader.nextLine();
             Streets streets = new Streets(intersectionsQuantity, streetQuantity);
+
             while(myReader.hasNextLine()) {
                 String nextLine = myReader.nextLine();
                 String[] row = nextLine.trim().split("\\s+");
@@ -69,7 +64,6 @@ public class CompetitionDijkstra {
                 int intersectionB = Integer.parseInt(row[1]);
                 double streetLength = Double.parseDouble(row[2]);
 
-//                streets.add(new Street(intersectionA, intersectionB, streetLength));
                 streets.insertStreet(intersectionA, intersectionB, streetLength);
             }
             myReader.close();
@@ -80,16 +74,27 @@ public class CompetitionDijkstra {
         }
     }
 
+    /**
+     * Get slowest speed
+     * Creates an int array, increases space complexity and the time complexity is good, although the very small data
+     * set, O(N log(N)) where N=3
+     * @return the slowest speed
+     */
+    private int getSlowestSpeed() {
+        int[] speeds = new int[]{ this.speedA, this.speedB, this.speedC };
+        Arrays.sort(speeds);
+        return speeds[0];
+     }
 
     /**
     * @return int: minimum minutes that will pass before the three contestants can meet
      */
-    public int timeRequiredforCompetition(){
 
-        //TO DO
-        return -1;
-    }
-
+    /** WORK IN PROGRESS
+     * TODO timeRequiredforCompetition()
+     * TODO CompetitionFloydWarshall
+     * TODO CompetitionTests
+     */
 }
 
 class Streets {
