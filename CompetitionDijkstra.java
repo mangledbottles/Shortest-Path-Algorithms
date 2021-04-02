@@ -51,7 +51,6 @@ public class CompetitionDijkstra {
     void parseStreets(String fileName) {
         try {
             File myObj = new File(fileName);
-            System.out.println("Starting parsing streets \n");
             Scanner myReader = new Scanner(myObj);
             int intersectionsQuantity = Integer.parseInt(myReader.nextLine());
             int streetQuantity = Integer.parseInt(myReader.nextLine()); // skip first two lines
@@ -61,7 +60,6 @@ public class CompetitionDijkstra {
                 String nextLine = myReader.nextLine();
                 String[] row = nextLine.trim().split("\\s+");
 
-//                System.out.println(Arrays.toString(row));
                 int intersectionA = Integer.parseInt(row[0]);
                 int intersectionB = Integer.parseInt(row[1]);
                 double streetLength = Double.parseDouble(row[2]);
@@ -71,7 +69,6 @@ public class CompetitionDijkstra {
             System.out.println("Finished parsing streets \n");
             myReader.close();
         } catch (FileNotFoundException error) {
-//            e.printStackTrace();
             System.out.println("File '" + fileName + "' not found. " + error.getMessage());
         } catch(Exception error) {
             System.out.println("Invalid data set provided. " + error.getMessage());
@@ -112,11 +109,9 @@ public class CompetitionDijkstra {
         if ((this.speedA > 100 || this.speedA < 50) || (this.speedB > 100 || this.speedB < 50)
                 || (this.speedC > 100 || this.speedC < 50)) return -1;
 
-//        System.out.println("Finished getting slowest speed " + slowestSpeed  +" \n");
         double[][] graph = new double[Streets.getIntersectionsQuantity()][Streets.getIntersectionsQuantity()];
 
         for(int i=0; i<streets.getIntersectionsQuantity(); i++) {
-//            Arrays.fill(graph[i], Double.POSITIVE_INFINITY);
             graph[i] = quickestAtVertex(i);
         }
 
