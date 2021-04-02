@@ -17,6 +17,7 @@
 
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.util.Arrays;
 import java.util.Scanner;
 
 public class CompetitionFloydWarshall {
@@ -69,14 +70,67 @@ public class CompetitionFloydWarshall {
         }
     }
 
+    public int timeRequiredforCompetition() {
+        if(this.streets == null) return -1;
+        if ((this.speedA > 100 || this.speedA < 50) || (this.speedB > 100 || this.speedB < 50)
+                || (this.speedC > 100 || this.speedC < 50)) return -1;
+
+        double[][] graph = new double[Streets.getIntersectionsQuantity()][Streets.getIntersectionsQuantity()];
+        Street[][] edgeTo = new Street[Streets.getIntersectionsQuantity()][Streets.getIntersectionsQuantity()];
+
+        for (int i = 0; i < Streets.getIntersectionsQuantity(); i++) Arrays.fill(graph[i], Double.POSITIVE_INFINITY);
+
+        for (int j = 0; j < Streets.getIntersectionsQuantity(); j++) {
+            for (Street currentStreet : streets.adj[j]) {
+                graph[currentStreet.intersectionA][currentStreet.intersectionB] = currentStreet.streetLength;
+                edgeTo[currentStreet.intersectionA][currentStreet.intersectionB] = currentStreet;
+            }
+
+            // Break out of infinite loops
+            if (graph[j][j] >= 0.0) {
+                System.out.println("Caught loop");
+                graph[j][j] = 0.0;
+                edgeTo[j][j] = null;
+            }
+        }
+
+        for (int i = 0; i < Streets.getIntersectionsQuantity(); i++) {
+            for (int j = 0; j < Streets.getIntersectionsQuantity(); j++) {
+                if (edgeTo[j][i] == null) continue;
+                for (int w = 0; w < Streets.getIntersectionsQuantity(); w++) {
+                    if (graph[j][w] > graph[j][i] + graph[i][w]) {
+                        graph[j][w] = graph[j][i] + graph[i][w];
+                        edgeTo[j][w] = edgeTo[i][w];
+                    }
+                }
+            }
+        }
+
+        int slowestSpeed = getSlowestSpeed();
+        if (this.getLongestDistance(graph) == Double.POSITIVE_INFINITY) return -1;
+        return (int) Math.ceil((this.getLongestDistance(graph) * 1000) / slowestSpeed);
+    }
 
     /**
-     * @return int: minimum minutes that will pass before the three contestants can meet
+     * Get slowest speed
+     * Creates an int array, increases space complexity and the time complexity is good, although the very small data
+     * set, O(N log(N)) where N=3
+     * @return the slowest speed
      */
-    public int timeRequiredforCompetition(){
+    private int getSlowestSpeed() {
+        int[] speeds = new int[]{ this.speedA, this.speedB, this.speedC };
+        Arrays.sort(speeds);
+        return speeds[0];
+    }
 
-        //TO DO
-        return -1;
+    private double getLongestDistance(double[][] graph) {
+        double longest = 0.00;
+        for (double[] streets : graph) {
+            for (double street : streets) {
+                if (longest < street) longest = street;
+            }
+        }
+        return longest;
     }
 
 }
