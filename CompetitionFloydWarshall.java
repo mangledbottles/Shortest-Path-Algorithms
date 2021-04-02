@@ -15,15 +15,58 @@
  * This class implements the competition using Floyd-Warshall algorithm
  */
 
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.util.Scanner;
+
 public class CompetitionFloydWarshall {
 
+    int speedA, speedB, speedC;
+    Streets streets;
+
     /**
-     * @param filename: A filename containing the details of the city road network
+     * @param fileName: A filename containing the details of the city road network
      * @param sA, sB, sC: speeds for 3 contestants
      */
-    CompetitionFloydWarshall (String filename, int sA, int sB, int sC){
+    CompetitionFloydWarshall (String fileName, int sA, int sB, int sC){
+        // Parse lines 3 onwards into class Street
+        parseStreets(fileName);
+        // Configure contestant speeds
+        this.speedA = sA;
+        this.speedB = sB;
+        this.speedC = sC;
+    }
 
-        //TODO
+    /**
+     *  Parse the streets from a given fileName
+     *  Enter each street into the Street class and store in a global ArrayList
+     * @param fileName location of file to parse
+     */
+    void parseStreets(String fileName) {
+        try {
+            File myObj = new File(fileName);
+            Scanner myReader = new Scanner(myObj);
+            int intersectionsQuantity = Integer.parseInt(myReader.nextLine());
+            int streetQuantity = Integer.parseInt(myReader.nextLine()); // skip first two lines
+            streets = new Streets(intersectionsQuantity, streetQuantity);
+
+            while(myReader.hasNextLine()) {
+                String nextLine = myReader.nextLine();
+                String[] row = nextLine.trim().split("\\s+");
+
+                int intersectionA = Integer.parseInt(row[0]);
+                int intersectionB = Integer.parseInt(row[1]);
+                double streetLength = Double.parseDouble(row[2]);
+
+                streets.insertStreet(intersectionA, intersectionB, streetLength);
+            }
+            System.out.println("Finished parsing streets \n");
+            myReader.close();
+        } catch (FileNotFoundException error) {
+            System.out.println("File '" + fileName + "' not found. " + error.getMessage());
+        } catch(Exception error) {
+            System.out.println("Invalid data set provided. " + error.getMessage());
+        }
     }
 
 
