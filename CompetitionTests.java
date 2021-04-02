@@ -30,19 +30,19 @@ public class CompetitionTests
         shortestTime = new CompetitionDijkstra(FILES_DIRECTORY + "input-D.txt", 75, 56, 87).timeRequiredforCompetition();
         assertEquals(shortestTime, 34);
 
-        shortestTime = new CompetitionDijkstra(FILES_DIRECTORY + "/1000EWD.txt", 75, 56, 87).timeRequiredforCompetition();
+        shortestTime = new CompetitionDijkstra(FILES_DIRECTORY + "1000EWD.txt", 75, 56, 87).timeRequiredforCompetition();
         TestCase.assertEquals(shortestTime, 25);
 
-        shortestTime = new CompetitionDijkstra(FILES_DIRECTORY + "./files/input-J.txt", 60, 75, 61).timeRequiredforCompetition();
+        shortestTime = new CompetitionDijkstra(FILES_DIRECTORY + "input-J.txt", 60, 75, 61).timeRequiredforCompetition();
         assertEquals(-1, -1);
 
-        shortestTime = new CompetitionDijkstra(FILES_DIRECTORY + "./files/input-J.txt", 98, 70, 84).timeRequiredforCompetition();
+        shortestTime = new CompetitionDijkstra(FILES_DIRECTORY + "input-J.txt", 98, 70, 84).timeRequiredforCompetition();
         assertEquals(-1, -1);
 
-        shortestTime = new CompetitionDijkstra(FILES_DIRECTORY + "./files/tinyEWD.txt", 75, 56, 87).timeRequiredforCompetition();
+        shortestTime = new CompetitionDijkstra(FILES_DIRECTORY + "tinyEWD.txt", 75, 56, 87).timeRequiredforCompetition();
         assertEquals(shortestTime, -1);
 
-        shortestTime = new CompetitionDijkstra(FILES_DIRECTORY + "./files/input-K.txt", 75, 56, 87).timeRequiredforCompetition();
+        shortestTime = new CompetitionDijkstra(FILES_DIRECTORY + "input-K.txt", 75, 56, 87).timeRequiredforCompetition();
         assertEquals(-1, -1);
 
         shortestTime = new CompetitionDijkstra(FILES_DIRECTORY + "thisFileDoesNotExist", 56, 78, 57).timeRequiredforCompetition();
@@ -63,10 +63,10 @@ public class CompetitionTests
         shortestTime = new CompetitionFloydWarshall(FILES_DIRECTORY + "1000EWD.txt", 75, 56, 87).timeRequiredforCompetition();
         TestCase.assertEquals(shortestTime, 25);
 
-        shortestTime = new CompetitionFloydWarshall(FILES_DIRECTORY + "./files/input-J.txt", 60, 75, 61).timeRequiredforCompetition();
+        shortestTime = new CompetitionFloydWarshall(FILES_DIRECTORY + "input-J.txt", 60, 75, 61).timeRequiredforCompetition();
         assertEquals(-1, -1);
 
-        shortestTime = new CompetitionFloydWarshall(FILES_DIRECTORY + "./files/input-J.txt", 98, 70, 84).timeRequiredforCompetition();
+        shortestTime = new CompetitionFloydWarshall(FILES_DIRECTORY + "input-J.txt", 98, 70, 84).timeRequiredforCompetition();
         assertEquals(-1, -1);
 
         shortestTime = new CompetitionFloydWarshall(FILES_DIRECTORY + "tinyEWD.txt", 75, 56, 87).timeRequiredforCompetition();
