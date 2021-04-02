@@ -10,7 +10,7 @@ public class CompetitionTests
 {
 
     private int shortestTime;
-    private String FILES_DIRECTORY;
+    private final String FILES_DIRECTORY;
 
     public CompetitionTests() {
         // Target WebCat, if running on WebCat, change file directory
