@@ -17,15 +17,16 @@
 
 import java.io.File;
 import java.io.FileNotFoundException;
-import java.nio.file.Path;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Comparator;
-import java.util.Scanner;
+import java.util.HashSet;
+import java.util.PriorityQueue;
+import java.util.*;
 
 public class CompetitionDijkstra {
 
     int speedA, speedB, speedC;
+    Streets streets;
 
     /**
      * @param fileName: A filename containing the details of the city road network
@@ -48,27 +49,30 @@ public class CompetitionDijkstra {
      * @param fileName location of file to parse
      */
     void parseStreets(String fileName) {
-        File myObj = new File(fileName);
         try {
+            File myObj = new File(fileName);
+            System.out.println("Starting parsing streets \n");
             Scanner myReader = new Scanner(myObj);
             int intersectionsQuantity = Integer.parseInt(myReader.nextLine());
             int streetQuantity = Integer.parseInt(myReader.nextLine()); // skip first two lines
-            Streets streets = new Streets(intersectionsQuantity, streetQuantity);
+            streets = new Streets(intersectionsQuantity, streetQuantity);
 
             while(myReader.hasNextLine()) {
                 String nextLine = myReader.nextLine();
                 String[] row = nextLine.trim().split("\\s+");
 
-                System.out.println(Arrays.toString(row));
+//                System.out.println(Arrays.toString(row));
                 int intersectionA = Integer.parseInt(row[0]);
                 int intersectionB = Integer.parseInt(row[1]);
                 double streetLength = Double.parseDouble(row[2]);
 
                 streets.insertStreet(intersectionA, intersectionB, streetLength);
             }
+            System.out.println("Finished parsing streets \n");
             myReader.close();
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
+        } catch (FileNotFoundException error) {
+//            e.printStackTrace();
+            System.out.println("File '" + fileName + "' not found. " + error.getMessage());
         } catch(Exception error) {
             System.out.println("Invalid data set provided. " + error.getMessage());
         }
@@ -95,14 +99,96 @@ public class CompetitionDijkstra {
      * TODO CompetitionFloydWarshall
      * TODO CompetitionTests
      */
+
+    private boolean alternateContains(PriorityQueue<Path> paths, int w) {
+        for (Path path : paths)
+            if (path.v == w) return true;
+        return false;
+    }
+
+
+    public int timeRequiredforCompetition() {
+        if(this.streets == null) return -1;
+        if ((this.speedA > 100 || this.speedA < 50) || (this.speedB > 100 || this.speedB < 50)
+                || (this.speedC > 100 || this.speedC < 50)) return -1;
+
+//        System.out.println("Finished getting slowest speed " + slowestSpeed  +" \n");
+        double[][] graph = new double[Streets.getIntersectionsQuantity()][Streets.getIntersectionsQuantity()];
+
+        for(int i=0; i<streets.getIntersectionsQuantity(); i++) {
+//            Arrays.fill(graph[i], Double.POSITIVE_INFINITY);
+            graph[i] = quickestAtVertex(i);
+        }
+
+        int slowestSpeed = getSlowestSpeed();
+        if (getLongestDistance(graph) == Double.POSITIVE_INFINITY) return -1;
+        return (int) Math.ceil((getLongestDistance(graph) * 1000) / slowestSpeed);
+    }
+
+    private double[] quickestAtVertex(int index) {
+        double[] distTo = new double[Streets.getIntersectionsQuantity()];
+
+        // Fill all destinations as unreachable initially (∞)
+        for (int j = 0; j < Streets.getIntersectionsQuantity(); j++)
+            distTo[j] = Double.POSITIVE_INFINITY;
+
+        distTo[index] = 0.0;
+
+        Comparator<Path> comparator = new Comparer();
+        PriorityQueue<Path> paths = new PriorityQueue<Path>(Streets.getIntersectionsQuantity(), comparator);
+
+        paths.add(new Path(index, distTo[index]));
+        while (!paths.isEmpty()) {
+            Path path = paths.poll();
+            for(Street street : streets.adj[path.v]) {
+                if(distTo[street.intersectionB] > distTo[street.intersectionA] + street.streetLength) {
+                    distTo[street.intersectionB] = distTo[street.intersectionA] + street.streetLength;
+
+                    if(!alternateContains(paths, street.intersectionB)) {
+                        paths.add(new Path(street.intersectionB, distTo[street.intersectionB]));
+                    } else {
+                        paths = replaceSpecial(paths, street.intersectionB, distTo[street.intersectionB]);
+                    }
+                }
+            }
+        }
+        return distTo;
+    }
+
+    private double getLongestDistance(double[][] graph) {
+        double longest = 0.00;
+        for (double[] streets : graph) {
+            for (double street : streets) {
+                if (longest < street) longest = street;
+            }
+        }
+        return longest;
+    }
+
+    private PriorityQueue<Path> replaceSpecial(PriorityQueue<Path> paths, int w, double newWeight) {
+        for (Path path : paths) {
+            if (path.v == w) {
+                paths.remove(path);
+                path.weight = newWeight;
+                paths.add(path);
+                break;
+            }
+        }
+        return paths;
+    }
 }
 
 class Streets {
-    ArrayList<Street> streets = new ArrayList<>();
-    int intersectionsQuantity, streetsQuantity;
+    public HashSet<Street>[] adj;
+    private static int intersectionsQuantity, streetsQuantity;
+
     Streets(int intersectionsQuantity, int streetsQuantity) {
-        this.intersectionsQuantity = intersectionsQuantity;
-        this.streetsQuantity = streetsQuantity;
+        Streets.intersectionsQuantity = intersectionsQuantity;
+        Streets.streetsQuantity = streetsQuantity;
+
+        adj = (HashSet<Street>[]) new HashSet[intersectionsQuantity];
+        for (int v = 0; v < intersectionsQuantity; v++)
+            adj[v] = new HashSet<Street>();
     }
 
     void insertStreet(int intersectionA, int intersectionB, double streetLength) {
@@ -111,7 +197,7 @@ class Streets {
             isVertexValid(intersectionB);
 
             Street s = new Street(intersectionA, intersectionB, streetLength);
-            streets.add(s);
+            adj[intersectionA].add(s);
         } catch(Exception e) {
             System.out.println("Error inserting edge");
         }
@@ -122,6 +208,14 @@ class Streets {
             throw new IllegalArgumentException("Vertex " + vertex + "  has an invalid range," +
                     "must be between 0 and " + (intersectionsQuantity - 1));
         }
+    }
+
+    static int getStreetsQuantity() {
+        return streetsQuantity;
+    }
+
+    static int getIntersectionsQuantity() {
+        return intersectionsQuantity;
     }
 
 }
@@ -138,5 +232,25 @@ class Street {
     }
     double getStreetLength() {
         return this.streetLength;
+    }
+}
+
+class Path {
+    int v;
+    double weight;
+
+    Path(int v, double weight){
+        this.v = v;
+        this.weight = weight;
+    }
+
+    public int hashCode(){
+        return v;
+    }
+}
+
+class Comparer implements Comparator<Path>{
+    public int compare(Path path, Path pathAlt) {
+        return Double.compare(path.weight, pathAlt.weight);
     }
 }
