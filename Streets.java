@@ -25,6 +25,10 @@ class Streets {
         }
     }
 
+    int getNodeQuantity() {
+        return this.adj.length;
+    }
+
     private void isVertexValid(int vertex) {
         if (vertex < 0 || vertex >= intersectionsQuantity) {
             throw new IllegalArgumentException("Vertex " + vertex + "  has an invalid range," +
