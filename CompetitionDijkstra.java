@@ -105,7 +105,7 @@ public class CompetitionDijkstra {
 
 
     public int timeRequiredforCompetition() {
-        if(this.streets == null) return -1;
+        if(this.streets == null || this.streets.getNodeQuantity() == 0) return -1;
         if ((this.speedA > 100 || this.speedA < 50) || (this.speedB > 100 || this.speedB < 50)
                 || (this.speedC > 100 || this.speedC < 50)) return -1;
 

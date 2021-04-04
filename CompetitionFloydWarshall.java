@@ -71,7 +71,7 @@ public class CompetitionFloydWarshall {
     }
 
     public int timeRequiredforCompetition() {
-        if(this.streets == null) return -1;
+        if(this.streets == null || this.streets.getNodeQuantity() == 0) return -1;
         if ((this.speedA > 100 || this.speedA < 50) || (this.speedB > 100 || this.speedB < 50)
                 || (this.speedC > 100 || this.speedC < 50)) return -1;
 
@@ -85,10 +85,8 @@ public class CompetitionFloydWarshall {
                 graph[currentStreet.intersectionA][currentStreet.intersectionB] = currentStreet.streetLength;
                 edgeTo[currentStreet.intersectionA][currentStreet.intersectionB] = currentStreet;
             }
-
-            // Break out of infinite loops
             if (graph[j][j] >= 0.0) {
-                System.out.println("Caught loop");
+//                System.out.println("Caught loop");
                 graph[j][j] = 0.0;
                 edgeTo[j][j] = null;
             }
