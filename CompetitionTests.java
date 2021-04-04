@@ -34,16 +34,16 @@ public class CompetitionTests
         TestCase.assertEquals(shortestTime, 25);
 
         shortestTime = new CompetitionDijkstra(FILES_DIRECTORY + "input-J.txt", 60, 75, 61).timeRequiredforCompetition();
-        assertEquals(-1, -1);
-
-        shortestTime = new CompetitionDijkstra(FILES_DIRECTORY + "input-J.txt", 98, 70, 84).timeRequiredforCompetition();
-        assertEquals(-1, -1);
-
-        shortestTime = new CompetitionDijkstra(FILES_DIRECTORY + "tinyEWD.txt", 75, 56, 87).timeRequiredforCompetition();
         assertEquals(shortestTime, -1);
 
+        shortestTime = new CompetitionDijkstra(FILES_DIRECTORY + "input-J.txt", 98, 70, 84).timeRequiredforCompetition();
+        assertEquals(shortestTime, -1);
+
+        shortestTime = new CompetitionDijkstra(FILES_DIRECTORY + "tinyEWD.txt", 75, 56, 87).timeRequiredforCompetition();
+        assertEquals(shortestTime, 34);
+
         shortestTime = new CompetitionDijkstra(FILES_DIRECTORY + "input-K.txt", 75, 56, 87).timeRequiredforCompetition();
-        assertEquals(-1, -1);
+        assertEquals(shortestTime, 286);
 
         shortestTime = new CompetitionDijkstra(FILES_DIRECTORY + "thisFileDoesNotExist", 56, 78, 57).timeRequiredforCompetition();
         assertEquals("File does not exist", shortestTime, -1);
@@ -64,16 +64,16 @@ public class CompetitionTests
         TestCase.assertEquals(shortestTime, 25);
 
         shortestTime = new CompetitionFloydWarshall(FILES_DIRECTORY + "input-J.txt", 60, 75, 61).timeRequiredforCompetition();
-        assertEquals(-1, -1);
+        assertEquals(shortestTime, -1);
 
         shortestTime = new CompetitionFloydWarshall(FILES_DIRECTORY + "input-J.txt", 98, 70, 84).timeRequiredforCompetition();
-        assertEquals(-1, -1);
+        assertEquals(shortestTime, -1);
 
         shortestTime = new CompetitionFloydWarshall(FILES_DIRECTORY + "tinyEWD.txt", 75, 56, 87).timeRequiredforCompetition();
         assertEquals(shortestTime, 34);
 
         shortestTime = new CompetitionFloydWarshall(FILES_DIRECTORY + "input-K.txt", 75, 56, 87).timeRequiredforCompetition();
-        assertEquals(-1, -1);
+        assertEquals(shortestTime, 286);
 
         shortestTime = new CompetitionFloydWarshall(FILES_DIRECTORY + "thisFileDoesNotExist", 56, 78, 57).timeRequiredforCompetition();
         assertEquals("File does not exist", shortestTime, -1);
@@ -82,6 +82,4 @@ public class CompetitionTests
         assertEquals("Null file", shortestTime, -1);
 
     }
-
-
 }
